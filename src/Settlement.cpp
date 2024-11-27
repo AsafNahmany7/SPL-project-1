@@ -8,6 +8,7 @@ using std::to_string;
 
  Settlement::Settlement(const string &name, SettlementType type) : name(name),type(type){};
     const string& Settlement:: getName()const {
+        int i =1;
         return name;
     };
 SettlementType Settlement::getType()const {
