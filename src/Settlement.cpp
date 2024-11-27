@@ -13,7 +13,7 @@ using std::to_string;
 SettlementType Settlement::getType()const {
     return type;
 };
-const string Settlement:: toString(){
+const string Settlement:: toString()const{
     string output =  "Settlement Name: " + name + ", Type: " + settlementTypeToString(type);
     return output;
     };
