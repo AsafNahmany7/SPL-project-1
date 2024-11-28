@@ -23,11 +23,11 @@ using std::to_string;
     
     const string Settlement:: settlementTypeToString(SettlementType type) const {
         
-    switch (type) {
-        case SettlementType::VILLAGE: return "VILLAGE";
-        case SettlementType::CITY: return "CITY";
-        case SettlementType::METROPOLIS: return "METROPOLIS";
-        default: return "UNKNOWN";
+        switch (type) {
+            case SettlementType::VILLAGE: return "VILLAGE";
+            case SettlementType::CITY: return "CITY";
+            case SettlementType::METROPOLIS: return "METROPOLIS";
+            default: return "UNKNOWN";
+        }
     }
-}
 
