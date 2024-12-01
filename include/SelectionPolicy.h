@@ -20,6 +20,8 @@ class NaiveSelection: public SelectionPolicy {
         ~NaiveSelection() override = default;
     private:
         int lastSelectedIndex;
+        int numberOfFacilities;
+        string builtFacilitiesList;
 };
 
 class BalancedSelection: public SelectionPolicy {
@@ -33,6 +35,9 @@ class BalancedSelection: public SelectionPolicy {
         int LifeQualityScore;
         int EconomyScore;
         int EnvironmentScore;
+        int numberOfFacilities;
+        string builtFacilitiesList;
+
 };
 
 class EconomySelection: public SelectionPolicy {
@@ -44,6 +49,10 @@ class EconomySelection: public SelectionPolicy {
         ~EconomySelection() override = default;
     private:
         int lastSelectedIndex;
+        int numberOfFacilities;
+        string builtFacilitiesList;
+
+
 
 };
 
@@ -56,4 +65,11 @@ class SustainabilitySelection: public SelectionPolicy {
         ~SustainabilitySelection() override = default;
     private:
         int lastSelectedIndex;
+        int numberOfFacilities;
+        string builtFacilitiesList;
+        
+    
+
 };
+
+

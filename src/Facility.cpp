@@ -38,10 +38,24 @@ FacilityCategory FacilityType::getCategory() const {
 
 // Facility Implementation
 Facility::Facility(const string &name, const string &settlementName, FacilityCategory category, int price, int lifeQuality_score, int economy_score, int environment_score)
-    : FacilityType(name, category, price, lifeQuality_score, economy_score, environment_score), settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price) {}
+    : FacilityType(name, category, price, lifeQuality_score, economy_score, environment_score),
+     settlementName(settlementName), 
+     status(FacilityStatus::UNDER_CONSTRUCTIONS),
+      timeLeft(price) {}
 
 Facility::Facility(const FacilityType &type, const string &settlementName)
-    : FacilityType(type), settlementName(settlementName), status(FacilityStatus::UNDER_CONSTRUCTIONS), timeLeft(price) {}
+    : FacilityType(type), 
+    settlementName(settlementName),
+     status(FacilityStatus::UNDER_CONSTRUCTIONS),
+      timeLeft(price) {}
+
+
+Facility::Facility(const Facility& other)
+    : FacilityType(other), 
+      settlementName(other.settlementName),
+      status(other.status),
+      timeLeft(other.timeLeft) {}
+
 
 const string& Facility::getSettlementName() const {
     return settlementName;
