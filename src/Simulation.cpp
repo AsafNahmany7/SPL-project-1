@@ -48,8 +48,25 @@ Simulation::Simulation(const string &configFilePath):isRunning(false), planCount
     }
 
     configFile.close();
+}
 
 
-    
+
+
+
+Simulation::~Simulation() {
+    for (BaseAction* action : actionsLog) {
+        delete action;
+    }
+
+    for (Settlement* settlement : settlements) {
+        delete settlement;
+    }
 
 }
+
+
+
+
+
+
