@@ -4,7 +4,7 @@
 
 Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions): plan_id(planId),
 settlement(settlement),
-construction_cap(static_cast<int>(settlement.getType())),
+construction_cap((static_cast<int>(settlement.getType())) + 1),
 selectionPolicy(selectionPolicy),
 status(PlanStatus::AVALIABLE),
 facilities(),
@@ -38,43 +38,6 @@ Plan::Plan(const Plan& other): plan_id(other.plan_id),
 
 
 
-}
-
-Plan& Plan::operator=(const Plan& other) {
- 
-   if (this != &other) {
-        for (Facility* facility : facilities) {
-            delete facility;
-        }
-        facilities.clear();
-
-        for (Facility* facility : underConstruction) {
-            delete facility;
-        }
-        underConstruction.clear();
-
-        delete selectionPolicy;
-
-        plan_id = other.plan_id;
-        construction_cap = other.construction_cap;
-        status = other.status;
-        life_quality_score = other.life_quality_score;
-        economy_score = other.economy_score;
-        environment_score = other.environment_score;
-        selectionPolicy = other.selectionPolicy->clone();
-
-        for (Facility* facility : other.facilities) {
-            Facility* facility_copy = new Facility(*facility);
-            this->facilities.push_back(facility_copy);
-        }
-
-        for (Facility* facility : other.underConstruction) {
-        Facility* facility_copy = new Facility(*facility);
-         this->underConstruction.push_back(facility_copy);           
-        }
-    }
-
-    return *this;
 }
 
 
@@ -145,17 +108,8 @@ void Plan::step(){
           }
           
        }
-        
-
-
-
 
     }
-
-
-
-
-
 
 }
 
