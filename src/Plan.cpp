@@ -78,13 +78,13 @@ void Plan::step(){
 
     if (status == PlanStatus::AVALIABLE){
 
-        while(underConstruction.size() <= construction_cap){
+        while(static_cast<int>(underConstruction.size()) <= construction_cap){
            const FacilityType& selectedFacility = selectionPolicy->selectFacility(facilityOptions);
            Facility* newFacility = new Facility(selectedFacility, settlement.getName());
            underConstruction.push_back(newFacility);
         }
 
-        if(underConstruction.size() == construction_cap){
+        if(static_cast<int>(underConstruction.size()) == construction_cap){
             this->status = PlanStatus::BUSY;
         }
 
@@ -219,5 +219,25 @@ const int Plan::getPlanId() const
     return plan_id;
 }
 
+const string Plan::getSelectionPolicyString() const
+{
+    if (dynamic_cast<NaiveSelection*>(selectionPolicy)) {
+        return "nve";
+    }
+    else if (dynamic_cast<BalancedSelection*>(selectionPolicy)) {
+        return "bal";
+    }
+    else if (dynamic_cast<EconomySelection*>(selectionPolicy)) {
+        return "eco";
+    }
+    else if (dynamic_cast<SustainabilitySelection*>(selectionPolicy)) {
+        return "env";
+    }
+    
+    return "unknown";
+}
 
-
+const int Plan::getPlanId() const
+{
+    return plan_id;
+}

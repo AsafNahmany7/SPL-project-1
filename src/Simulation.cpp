@@ -202,3 +202,10 @@ const vector<BaseAction*>& Simulation::getActionsLog() const {
     return actionsLog;
 }
 
+bool Simulation::isPlanExists(const int planID) {
+    return planID >= 0 && planID < static_cast<int>(plans.size());
+}
+
+const std::vector<Plan>& Simulation::getPlans() const {
+    return plans;
+}

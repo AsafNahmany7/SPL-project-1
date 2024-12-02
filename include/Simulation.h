@@ -30,6 +30,8 @@ class Simulation {
         void close();
         void open();
         const vector<BaseAction*>& Simulation::getActionsLog() const;
+        bool isPlanExists(const int planID);
+        const std::vector<Plan>& getPlans() const;
 
 
     private:

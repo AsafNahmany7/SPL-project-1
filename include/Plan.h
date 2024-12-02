@@ -29,7 +29,6 @@ class Plan {
         const string getSelectionPolicyString() const;
         const int getPlanId() const;
 
-
     private:
         int plan_id;
         const Settlement &settlement;
