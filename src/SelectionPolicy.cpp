@@ -41,7 +41,13 @@ NaiveSelection* NaiveSelection::clone() const{
     return clone;
 }
 
-BalancedSelection::BalancedSelection(int LifeQualityScore, int EconomyScoreint, int EnvironmentScore):LifeQualityScore(LifeQualityScore),EconomyScore(EconomyScore),EnvironmentScore(EnvironmentScore),builtFacilitiesList("Built Facilities list:"),numberOfFacilities(0){}
+BalancedSelection::BalancedSelection(int LifeQualityScore, int EconomyScore, int EnvironmentScore):
+LifeQualityScore(LifeQualityScore),
+EconomyScore(EconomyScore),
+EnvironmentScore(EnvironmentScore),
+numberOfFacilities(0),
+builtFacilitiesList("Built Facilities list:")
+{}
 
 const FacilityType& BalancedSelection:: selectFacility(const vector<FacilityType>& facilitiesOptions){
     numberOfFacilities++;
@@ -50,7 +56,7 @@ const FacilityType& BalancedSelection:: selectFacility(const vector<FacilityType
      int minimal_distance;
 
 
-     while(i < facilitiesOptions.size()){
+     while(i < static_cast<int>(facilitiesOptions.size())){
 
         int eco_score = EconomyScore + current-> getEconomyScore();
         int envo_score = EnvironmentScore + current-> getEnvironmentScore();
@@ -116,7 +122,7 @@ const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>&
     bool inside_start = false;
 
 
-    if(lastSelectedIndex  ==-1 || lastSelectedIndex + 1 == facilitiesOptions.size()){
+    if(lastSelectedIndex  ==-1 || lastSelectedIndex + 1 == static_cast<int>(facilitiesOptions.size())){
         i = 0; 
     }
 
@@ -134,7 +140,7 @@ const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>&
                 current = &facilitiesOptions[i];
             }
             else{
-                if(i == facilitiesOptions.size() - 1){
+                if(i == (static_cast<int>(facilitiesOptions.size()) - 1)){
                     i = 0;
                 }
                 else{
@@ -177,7 +183,7 @@ const FacilityType& SustainabilitySelection::selectFacility(const vector<Facilit
     bool inside_start = false;
 
 
-    if(lastSelectedIndex == -1 || lastSelectedIndex + 1 == facilitiesOptions.size()){
+    if(lastSelectedIndex == -1 || lastSelectedIndex + 1 == static_cast<int>(facilitiesOptions.size())){
         i = 0; 
     }
 
@@ -195,7 +201,7 @@ const FacilityType& SustainabilitySelection::selectFacility(const vector<Facilit
                 current = &facilitiesOptions[i];
             }
             else{
-                if(i == facilitiesOptions.size() - 1){
+                if(i == (static_cast<int>(facilitiesOptions.size()) - 1)){
                     i = 0;
                 }
                 else{

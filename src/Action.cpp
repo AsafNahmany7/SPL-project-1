@@ -1,6 +1,7 @@
 #include "Action.h"
 #include <iostream>
 using std::string;
+#include "Simulation.h"
 
 // BaseAction Implementation
 BaseAction::BaseAction() : errorMsg(""), status(ActionStatus::ERROR) {}

@@ -10,11 +10,17 @@ FacilityType::FacilityType(const string &name, FacilityCategory category, int pr
     : name(name), category(category), price(price), lifeQuality_score(lifeQuality_score), economy_score(economy_score), environment_score(environment_score) {}
 
 FacilityType::FacilityType(const FacilityType& other)
-    : name(other.name), category(other.category), price(other.price), lifeQuality_score(other.lifeQuality_score), economy_score(other.economy_score), environment_score(other.environment_score) {}
-
+    : name(other.name),
+      category(other.category),
+      price(other.price),
+      lifeQuality_score(other.lifeQuality_score),
+      economy_score(other.economy_score),
+      environment_score(other.environment_score) {}
 const string& FacilityType::getName() const {
     return name;
 }
+
+
 
 int FacilityType::getCost() const {
     return price;
@@ -61,7 +67,7 @@ const string& Facility::getSettlementName() const {
     return settlementName;
 }
 
-const int Facility::getTimeLeft() const {
+int Facility::getTimeLeft() const {
     return timeLeft;
 }
 

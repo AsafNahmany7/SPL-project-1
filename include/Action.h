@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "Simulation.h"
+class Simulation;
 enum class SettlementType;
 enum class FacilityCategory;
 

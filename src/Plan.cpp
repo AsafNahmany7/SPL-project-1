@@ -16,13 +16,14 @@ environment_score(0){}
 
 Plan::Plan(const Plan& other): plan_id(other.plan_id),
       settlement(other.settlement),
+      selectionPolicy(other.selectionPolicy->clone()),
       construction_cap(other.construction_cap),
       status(other.status),
       facilityOptions(other.facilityOptions),
       life_quality_score(other.life_quality_score),
       economy_score(other.economy_score),
-      environment_score(other.environment_score),
-      selectionPolicy(other.selectionPolicy->clone())
+      environment_score(other.environment_score)
+      
       
 {
     for (Facility* facility : other.facilities) {
@@ -56,15 +57,15 @@ Plan::~Plan() {
 
 
 
-const int Plan::getlifeQualityScore()const{
+int Plan::getlifeQualityScore()const{
     return life_quality_score;
 }
 
-const int Plan::getEconomyScore()const{
+int Plan::getEconomyScore()const{
     return economy_score;
 }
 
-const int Plan::getEnvironmentScore()const{
+int Plan::getEnvironmentScore()const{
     return environment_score;
 }
 
@@ -196,28 +197,7 @@ bool Plan::isAvailable()
     return false;
 }
 
-const string Plan::getSelectionPolicyString() const
-{
-    if (dynamic_cast<NaiveSelection*>(selectionPolicy)) {
-        return "nve";
-    }
-    else if (dynamic_cast<BalancedSelection*>(selectionPolicy)) {
-        return "bal";
-    }
-    else if (dynamic_cast<EconomySelection*>(selectionPolicy)) {
-        return "eco";
-    }
-    else if (dynamic_cast<SustainabilitySelection*>(selectionPolicy)) {
-        return "env";
-    }
-    
-    return "unknown";
-}
 
-const int Plan::getPlanId() const
-{
-    return plan_id;
-}
 
 const string Plan::getSelectionPolicyString() const
 {
@@ -237,7 +217,11 @@ const string Plan::getSelectionPolicyString() const
     return "unknown";
 }
 
-const int Plan::getPlanId() const
+int Plan::getPlanId() const
 {
     return plan_id;
+}
+
+SelectionPolicy* Plan::getSelectionPolicy() const {
+    return selectionPolicy;
 }

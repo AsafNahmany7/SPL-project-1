@@ -15,7 +15,7 @@ class SelectionPolicy;
 class Simulation {
     public:
         Simulation(const string &configFilePath);
-        Simulation::Simulation(const Simulation& other);
+        Simulation(const Simulation& other);
         Simulation& operator=(const Simulation& other);
         ~Simulation();
         void start();
@@ -29,7 +29,7 @@ class Simulation {
         void step();
         void close();
         void open();
-        const vector<BaseAction*>& Simulation::getActionsLog() const;
+        const vector<BaseAction*>& getActionsLog() const;
         bool isPlanExists(const int planID);
         const std::vector<Plan>& getPlans() const;
 

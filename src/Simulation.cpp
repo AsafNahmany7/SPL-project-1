@@ -8,7 +8,14 @@
 using std::cout;
 using std::endl;
 
-Simulation::Simulation(const string &configFilePath):isRunning(false), planCounter(0), actionsLog(), plans(), settlements(), facilitiesOptions(){
+Simulation::Simulation(const string &configFilePath):
+isRunning(false), 
+planCounter(0),
+actionsLog(),
+plans(),
+settlements(),
+facilitiesOptions()
+{
      std::ifstream configFile(configFilePath);
     if (!configFile.is_open()) {
         throw std::runtime_error("Failed to open configuration file: " + configFilePath);
@@ -22,9 +29,9 @@ Simulation::Simulation(const string &configFilePath):isRunning(false), planCount
 
         if (type == "settlement") {
             string name;
-            int type;
-            iss >> name >> type;
-            settlements.push_back(new Settlement(name, static_cast<SettlementType>(type)));
+            int settlementType;
+            iss >> name >> settlementType;
+            settlements.push_back(new Settlement(name, static_cast<SettlementType>(settlementType)));
         } 
         else if (type == "facility") {
             string name;
@@ -60,8 +67,9 @@ Simulation::Simulation(const string &configFilePath):isRunning(false), planCount
 Simulation::Simulation(const Simulation& other)
     : isRunning(other.isRunning),
       planCounter(other.planCounter),
-      facilitiesOptions(other.facilitiesOptions),
-      plans(other.plans) 
+      plans(other.plans) ,
+      facilitiesOptions(other.facilitiesOptions)
+      
 
 {
     for (BaseAction* action : other.actionsLog) {
@@ -88,8 +96,7 @@ Simulation::~Simulation() {
 }
 
 Simulation& Simulation::operator=(const Simulation& other) {
-    if (this != &other) {
-
+   if (this != &other) {
         for (BaseAction* action : actionsLog) {
             delete action;
         }
@@ -100,10 +107,24 @@ Simulation& Simulation::operator=(const Simulation& other) {
         }
         settlements.clear();
 
+        for (Plan& plan : plans) {
+            for (Facility* facility : plan.getFacilities()) {
+                delete facility;  
+            }
+            delete plan.getSelectionPolicy(); 
+        }
+        plans.clear();
+
         isRunning = other.isRunning;
         planCounter = other.planCounter;
-        facilitiesOptions = other.facilitiesOptions;
-        plans = other.plans; 
+        facilitiesOptions.clear();
+        for (const FacilityType& facility : other.facilitiesOptions) {
+        facilitiesOptions.push_back(facility); 
+       }
+
+        for (const Plan& plan : other.plans) {
+            plans.push_back(plan); 
+        }
 
         for (BaseAction* action : other.actionsLog) {
             actionsLog.push_back(action->clone());
@@ -132,10 +153,12 @@ void Simulation::addAction(BaseAction *action){
 
 bool Simulation::addSettlement(Settlement *settlement){
     settlements.push_back(settlement);
+    return true;
 } 
 
 bool Simulation::addFacility(FacilityType facility){
     facilitiesOptions.push_back(facility);
+    return true;
 }
 bool Simulation::isSettlementExists(const string &settlementName){
 
@@ -161,7 +184,11 @@ Settlement& Simulation::getSettlement(const string& settlementName){
 }
 
 Plan& Simulation::getPlan(const int planID){
+   if (!isPlanExists(planID)) {
+        throw std::out_of_range("Plan ID is out of range.");
+    }
     return plans[planID];
+
 }
 
 void Simulation::step() {
@@ -171,16 +198,6 @@ void Simulation::step() {
 }
 
 void Simulation::close() {
-   for (size_t i = 0; i < plans.size(); ++i) {
-        const Plan& plan = plans[i];
-        std::cout << "PlanID: " << i << "\n"; 
-        std::cout << "SettlementName: " << plan.getSettlementName() << "\n";
-        std::cout << "LifeQuality_Score: " << plan.getlifeQualityScore() << "\n";
-        std::cout << "Economy_Score: " << plan.getEconomyScore() << "\n";
-        std::cout << "Environment_Score: " << plan.getEnvironmentScore() << "\n";
-        std::cout << "----------------------------------\n";
-    }
-
     isRunning = false;
 
     for (BaseAction* action : actionsLog) {
