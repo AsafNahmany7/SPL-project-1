@@ -72,15 +72,80 @@ Simulation::Simulation(const Simulation& other)
       
 
 {
-    for (BaseAction* action : other.actionsLog) {
-        actionsLog.push_back(action->clone()); 
+    for (BaseAction* currentOtherAction : other.actionsLog) {
+        BaseAction* currentOtherActionCopy = currentOtherAction->clone();
+        this->actionsLog.push_back(currentOtherActionCopy);
     }
 
-    for (Settlement* settlement : other.settlements) {
-        settlements.push_back(new Settlement(*settlement)); 
+    for (Settlement* currentOtherSettlement : other.settlements) {
+        Settlement* currentOtherSettlementCopy = new Settlement(*currentOtherSettlement);
+        this->settlements.push_back(currentOtherSettlement);
     }
 }
 
+Simulation::Simulation(Simulation&& other){
+    this->isRunning=other.isRunning;
+    this->planCounter=other.planCounter;
+    this->plans = other.plans;
+    this->facilitiesOptions = other.facilitiesOptions;
+
+    for (BaseAction* currentOtherAction : other.actionsLog) {
+        BaseAction* currentOtherActionCopy = currentOtherAction;
+        this->actionsLog.push_back(currentOtherActionCopy);
+        currentOtherAction=nullptr;
+    }
+
+    for (Settlement* currentOtherSettlement : other.settlements) {
+        Settlement* currentOtherSettlementCopy = currentOtherSettlement;
+        this->settlements.push_back(currentOtherSettlementCopy);
+        currentOtherSettlement = nullptr;
+    }
+
+
+
+}
+
+Simulation& Simulation::operator=(Simulation&& other){
+    if(this==&other){
+        return *this;
+    }
+
+     for(BaseAction* currentAction : this->actionsLog){
+        delete currentAction;
+        this->actionsLog.clear();
+    }
+
+    for(Plan currentPlan : this->plans){
+        this->plans.clear();
+    }
+    for(Settlement* currentSettlement : this->settlements){
+        delete currentSettlement;
+        this->settlements.clear();
+    }
+    for(FacilityType currentFacility : this->facilitiesOptions){
+        this->facilitiesOptions.clear();
+    }
+
+
+    this->isRunning = other.isRunning;
+    this->planCounter = other.planCounter;
+
+     for (BaseAction* currentOtherAction : other.actionsLog) {
+        BaseAction* currentOtherActionCopy = currentOtherAction;
+        this->actionsLog.push_back(currentOtherActionCopy);
+        currentOtherAction=nullptr;
+    }
+
+    for (Settlement* currentOtherSettlement : other.settlements) {
+        Settlement* currentOtherSettlementCopy = currentOtherSettlement;
+        this->settlements.push_back(currentOtherSettlementCopy);
+        currentOtherSettlement = nullptr;
+    }
+
+
+
+ 
+}
 
 
 
@@ -96,46 +161,51 @@ Simulation::~Simulation() {
 }
 
 Simulation& Simulation::operator=(const Simulation& other) {
-   if (this != &other) {
-        for (BaseAction* action : actionsLog) {
-            delete action;
-        }
-        actionsLog.clear();
-
-        for (Settlement* settlement : settlements) {
-            delete settlement;
-        }
-        settlements.clear();
-
-        for (Plan& plan : plans) {
-            for (Facility* facility : plan.getFacilities()) {
-                delete facility;  
-            }
-            delete plan.getSelectionPolicy(); 
-        }
-        plans.clear();
-
-        isRunning = other.isRunning;
-        planCounter = other.planCounter;
-        facilitiesOptions.clear();
-        for (const FacilityType& facility : other.facilitiesOptions) {
-        facilitiesOptions.push_back(facility); 
-       }
-
-        for (const Plan& plan : other.plans) {
-            plans.push_back(plan); 
-        }
-
-        for (BaseAction* action : other.actionsLog) {
-            actionsLog.push_back(action->clone());
-        }
-
-        for (Settlement* settlement : other.settlements) {
-            settlements.push_back(new Settlement(*settlement));
-        }
+    if(this == &other){
+        return *this;
     }
-    return *this;
+
+
+
+    for(BaseAction* currentAction : this->actionsLog){
+        delete currentAction;
+        this->actionsLog.clear();
+    }
+
+    for(Plan currentPlan : this->plans){
+        this->plans.clear();
+    }
+    for(Settlement* currentSettlement : this->settlements){
+        delete currentSettlement;
+        this->settlements.clear();
+    }
+    for(FacilityType currentFacility : this->facilitiesOptions){
+        this->facilitiesOptions.clear();
+    }
+
+
+    this->isRunning = other.isRunning;
+    this->planCounter = other.planCounter;
+
+    for(BaseAction* currentOtherAction : other.actionsLog){
+        BaseAction* currentOtherActionCopy = currentOtherAction->clone();
+        this->actionsLog.push_back(currentOtherActionCopy);
+    }
+
+    for(Plan currentOtherPlan : other.plans){
+        this->plans.emplace_back(currentOtherPlan);
+    }
+    for(Settlement* currentOtherSettlement : other.settlements){
+        Settlement* currentOtherSettlementCopy = new Settlement(*currentOtherSettlement);
+        this->settlements.push_back(currentOtherSettlement);
+    }
+    for(FacilityType currentOtherFacility : other.facilitiesOptions){
+        this->facilitiesOptions.emplace_back(currentOtherFacility);
+    }
 }
+
+
+
 
 void Simulation::start(){
     isRunning = true;
