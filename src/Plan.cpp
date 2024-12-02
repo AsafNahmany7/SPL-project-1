@@ -78,7 +78,7 @@ void Plan::step(){
 
     if (status == PlanStatus::AVALIABLE){
 
-        while(facilities.size() <= construction_cap){
+        while(underConstruction.size() <= construction_cap){
            const FacilityType& selectedFacility = selectionPolicy->selectFacility(facilityOptions);
            Facility* newFacility = new Facility(selectedFacility, settlement.getName());
            underConstruction.push_back(newFacility);
@@ -145,9 +145,9 @@ void Plan::addFacility(Facility* facility){
 
 
     facilities.push_back(facility);
-    this->environment_score = facility->getEnvironmentScore();
-    this->economy_score = facility->getEconomyScore();
-    this->life_quality_score = facility->getLifeQualityScore(); 
+    this->environment_score += facility->getEnvironmentScore();
+    this->economy_score += facility->getEconomyScore();
+    this->life_quality_score += facility->getLifeQualityScore(); 
 
 
 
@@ -183,7 +183,41 @@ const string Plan::toString() const{
     return result;
 }
 
+const string Plan::getSettlementName() const
+{   
+    return settlement.getName();
+}
 
+bool Plan::isAvailable()
+{
+    if(status == PlanStatus::AVALIABLE){
+        return true;
+    }
+    return false;
+}
+
+const string Plan::getSelectionPolicyString() const
+{
+    if (dynamic_cast<NaiveSelection*>(selectionPolicy)) {
+        return "nve";
+    }
+    else if (dynamic_cast<BalancedSelection*>(selectionPolicy)) {
+        return "bal";
+    }
+    else if (dynamic_cast<EconomySelection*>(selectionPolicy)) {
+        return "eco";
+    }
+    else if (dynamic_cast<SustainabilitySelection*>(selectionPolicy)) {
+        return "env";
+    }
+    
+    return "unknown";
+}
+
+const int Plan::getPlanId() const
+{
+    return plan_id;
+}
 
 
 

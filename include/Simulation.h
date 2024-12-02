@@ -5,6 +5,7 @@
 #include "Plan.h"
 #include "Settlement.h"
 #include "SelectionPolicy.h"
+#include "Action.h"
 using std::string;
 using std::vector;
 
@@ -15,8 +16,7 @@ class Simulation {
     public:
         Simulation(const string &configFilePath);
         Simulation::Simulation(const Simulation& other);
-        
-
+        Simulation& operator=(const Simulation& other);
         ~Simulation();
         void start();
         void addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy);
@@ -29,10 +29,12 @@ class Simulation {
         void step();
         void close();
         void open();
+        const vector<BaseAction*>& Simulation::getActionsLog() const;
+
 
     private:
         bool isRunning;
-        int planCounter; //For assigning unique plan IDs
+        int planCounter; 
         vector<BaseAction*> actionsLog;
         vector<Plan> plans;
         vector<Settlement*> settlements;
