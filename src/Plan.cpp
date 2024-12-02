@@ -183,7 +183,38 @@ const string Plan::toString() const{
     return result;
 }
 
+const string Plan::getSettlementName() const
+{   
+    return settlement.getName();
+}
 
+bool Plan::isAvailable()
+{
+    if(status == PlanStatus::AVALIABLE){
+        return true;
+    }
+    return false;
+}
 
+const string Plan::getSelectionPolicyString() const
+{
+    if (dynamic_cast<NaiveSelection*>(selectionPolicy)) {
+        return "nve";
+    }
+    else if (dynamic_cast<BalancedSelection*>(selectionPolicy)) {
+        return "bal";
+    }
+    else if (dynamic_cast<EconomySelection*>(selectionPolicy)) {
+        return "eco";
+    }
+    else if (dynamic_cast<SustainabilitySelection*>(selectionPolicy)) {
+        return "env";
+    }
+    
+    return "unknown";
+}
 
-
+const int Plan::getPlanId() const
+{
+    return plan_id;
+}
