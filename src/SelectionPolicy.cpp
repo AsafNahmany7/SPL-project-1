@@ -53,10 +53,7 @@ builtFacilitiesList("Built Facilities list:")
 
 const FacilityType& BalancedSelection:: selectFacility(const vector<FacilityType>& facilitiesOptions){
     numberOfFacilities++;
-    std::cout << "initial envo " <<EnvironmentScore << std::endl;
-    std::cout << "initial eco " <<EconomyScore << std::endl;
-    std::cout << "initial lifeq " << LifeQualityScore << std::endl;
-
+   
     const FacilityType* current = &facilitiesOptions[0];
     int firstadd_lifeq_score  = LifeQualityScore + current->getLifeQualityScore();
     int firstadd_eco_score = EconomyScore + current->getEconomyScore();
@@ -80,10 +77,9 @@ const FacilityType& BalancedSelection:: selectFacility(const vector<FacilityType
         int x = abs( secondAdd_lifeq_score -  SecondAdd_eco_score);
         int y = abs( secondAdd_lifeq_score -  SecondAdd_envo_score);
         int z = abs( SecondAdd_eco_score -  SecondAdd_envo_score);
-        std::cout << "checking distance after :  " << facility.getName()<< std::endl;
+       
 
         int currentdistance = std::max({x, y, z});
-        std::cout << "distance will be "  << currentdistance<< std::endl;
 
 
         if (currentdistance == 0){
@@ -96,7 +92,6 @@ const FacilityType& BalancedSelection:: selectFacility(const vector<FacilityType
         } 
 
     }
-            std::cout << "best choice is  " << current->getName()  <<" WIth distance of: " << minimalDistance <<std::endl;
     LifeQualityScore += current->getLifeQualityScore();
     EnvironmentScore += current->getEnvironmentScore();
     EconomyScore += current->getEconomyScore();

@@ -20,6 +20,10 @@ facilitiesOptions()
     if (!configFile.is_open()) {
         throw std::runtime_error("Failed to open configuration file: " + configFilePath);
     }
+    
+    if (configFile.peek() == std::ifstream::traits_type::eof()) {
+        throw std::runtime_error("Configuration file is empty: " + configFilePath);
+    }
 
     string line;
     while (std::getline(configFile, line)) {
@@ -186,8 +190,133 @@ Simulation& Simulation::operator=(const Simulation& other) {
 
 
 
-void Simulation::start(){
-    isRunning = true;
+void Simulation::start() {
+    isRunning = true; // Start the simulation
+    cout << "Simulation started. Enter commands:\n";
+
+    while (isRunning) {
+        cout << "> "; // Prompt for input
+        string command;
+        getline(cin, command); // Get a full line from the user
+
+        std::istringstream iss(command);
+        string actionType;
+        iss >> actionType;
+
+        if (actionType == "step") {
+            int numOfSteps;
+            iss >> numOfSteps;
+
+            if (!iss.fail()) {
+                for (int i = 0; i < numOfSteps; ++i) {
+                    SimulateStep* action = new SimulateStep(1); // Simulate one step at a time
+                    action->act(*this);
+                    addAction(action);
+                }
+            } else {
+                cout << "Invalid input for step command. Syntax: step <number of steps>\n";
+            }
+        }
+        else if (actionType == "plan") {
+            string settlementName, policyType;
+            iss >> settlementName >> policyType;
+
+            if (!iss.fail()) {
+                AddPlan* action = new AddPlan(settlementName, policyType);
+                action->act(*this);
+                addAction(action);
+            } else {
+                cout << "Invalid input for plan command. Syntax: plan <settlement_name> <selection_policy>\n";
+            }
+        }
+        else if (actionType == "add_settlement") {
+            string settlementName, settlementTypeStr;
+            iss >> settlementName >> settlementTypeStr;
+
+            if (!iss.fail()) {
+                SettlementType settlementType;
+                if (settlementTypeStr == "village") {
+                    settlementType = static_cast<SettlementType>(0);
+                } else if (settlementTypeStr == "city") {
+                    settlementType = static_cast<SettlementType>(1);
+                } else if (settlementTypeStr == "metropolis") {
+                    settlementType = static_cast<SettlementType>(2);
+                } else {
+                    cout << "Invalid settlement type. Use 'village', 'city', or 'metropolis'.\n";
+                    continue;
+                }
+
+                AddSettlement* action = new AddSettlement(settlementName, settlementType);
+                action->act(*this);
+                addAction(action);
+            } else {
+                cout << "Invalid input for add_settlement command. Syntax: add_settlement <settlement_name> <settlement_type>\n";
+            }
+        }
+        else if (actionType == "facility") {
+            string facilityName;
+            int category, price, lifeqImpact, ecoImpact, envImpact;
+            iss >> facilityName >> category >> price >> lifeqImpact >> ecoImpact >> envImpact;
+
+            if (!iss.fail()) {
+                AddFacility* action = new AddFacility(facilityName, static_cast<FacilityCategory>(category), price, lifeqImpact, ecoImpact, envImpact);
+                action->act(*this);
+                addAction(action);
+            } else {
+                cout << "Invalid input for facility command. Syntax: facility <facility_name> <category> <price> <lifeq_impact> <eco_impact> <env_impact>\n";
+            }
+        }
+        else if (actionType == "planStatus") {
+            int planId;
+            iss >> planId;
+
+            if (!iss.fail()) {
+                PrintPlanStatus* action = new PrintPlanStatus(planId);
+                action->act(*this);
+                addAction(action);
+            } else {
+                cout << "Invalid input for planStatus command. Syntax: planStatus <plan_id>\n";
+            }
+        }
+        else if (actionType == "changePolicy") {
+            int planId;
+            string newPolicy;
+            iss >> planId >> newPolicy;
+
+            if (!iss.fail()) {
+                ChangePlanPolicy* action = new ChangePlanPolicy(planId, newPolicy);
+                action->act(*this);
+                addAction(action);
+            } else {
+                cout << "Invalid input for changePolicy command. Syntax: changePolicy <plan_id> <selection_policy>\n";
+            }
+        }
+        else if (actionType == "log") {
+            PrintActionsLog* action = new PrintActionsLog();
+            action->act(*this);
+            addAction(action);
+        }
+        else if (actionType == "close") {
+            Close* action = new Close();
+            action->act(*this); // Will set isRunning = false
+            addAction(action);
+        }
+        else if (actionType == "backup") {
+            BackupSimulation* action = new BackupSimulation();
+            action->act(*this);
+            addAction(action);
+        }
+        else if (actionType == "restore") {
+            RestoreSimulation* action = new RestoreSimulation();
+            action->act(*this);
+            addAction(action);
+        }
+        else {
+            cout << "Unknown command: " << actionType << "\n";
+        }
+    }
+
+    cout << "Simulation stopped.\n";
 }
 
 void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy){
