@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 
+using namespace std;
+
 Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions): plan_id(planId),
 settlement(settlement),
 construction_cap((static_cast<int>(settlement.getType())) + 1),
@@ -78,8 +80,7 @@ void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy){
 void Plan::step(){
 
     if (status == PlanStatus::AVALIABLE){
-
-        while(static_cast<int>(underConstruction.size()) <= construction_cap){
+        while(static_cast<int>(underConstruction.size()) < construction_cap){
            const FacilityType& selectedFacility = selectionPolicy->selectFacility(facilityOptions);
            Facility* newFacility = new Facility(selectedFacility, settlement.getName());
            underConstruction.push_back(newFacility);
@@ -100,7 +101,6 @@ void Plan::step(){
     }
 
     else{
-
         for (Facility* facility : underConstruction) {
           facility->step(); 
           if (facility->getStatus() == FacilityStatus::OPERATIONAL){
@@ -127,6 +127,10 @@ void Plan::printStatus(){
 
 const vector<Facility*>& Plan::getFacilities() const{
     return facilities;
+}
+
+const vector<Facility*>& Plan::getUnderConstruction() const{
+    return underConstruction;
 }
 
 void Plan::addFacility(Facility* facility){

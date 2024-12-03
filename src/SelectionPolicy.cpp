@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cstdlib>
 using std::vector;
+#include <limits>
+#include <algorithm>
 
 
 NaiveSelection::NaiveSelection():lastSelectedIndex(-1), numberOfFacilities(0), builtFacilitiesList("Built Facilities list:"){}
@@ -51,51 +53,55 @@ builtFacilitiesList("Built Facilities list:")
 
 const FacilityType& BalancedSelection:: selectFacility(const vector<FacilityType>& facilitiesOptions){
     numberOfFacilities++;
-     const FacilityType* current = &(facilitiesOptions[0]);
-     int i = 0;
-     int minimal_distance;
+    std::cout << "initial envo " <<EnvironmentScore << std::endl;
+    std::cout << "initial eco " <<EconomyScore << std::endl;
+    std::cout << "initial lifeq " << LifeQualityScore << std::endl;
 
+    const FacilityType* current = &facilitiesOptions[0];
+    int firstadd_lifeq_score  = LifeQualityScore + current->getLifeQualityScore();
+    int firstadd_eco_score = EconomyScore + current->getEconomyScore();
+    int firstadd_envo_score = EnvironmentScore + current->getEnvironmentScore();
 
-     while(i < static_cast<int>(facilitiesOptions.size())){
-
-        int eco_score = EconomyScore + current-> getEconomyScore();
-        int envo_score = EnvironmentScore + current-> getEnvironmentScore();
-        int lifeQ_score = LifeQualityScore + current-> getLifeQualityScore();
-
-        int distance = abs(eco_score - envo_score);
-        
-        if (distance < abs(eco_score - lifeQ_score)){
-            distance = abs(eco_score - lifeQ_score);
-        }
-
-        if (distance < abs(envo_score-lifeQ_score)){
-            distance = abs(envo_score-lifeQ_score);
-        }
-
-       if(i==0){
-        minimal_distance = distance;
-       }
-
-        if (distance == 0){
-            builtFacilitiesList += "\n" + std::to_string(numberOfFacilities) + ". "  + current->getName();
-            return *current;
-        }
-
-        if(minimal_distance > distance){
-            current =  &facilitiesOptions[i];
-            minimal_distance = distance;
-        }
-        
-        i++;
-     }
+    int a = abs(firstadd_lifeq_score - firstadd_eco_score);
+    int b = abs(firstadd_lifeq_score - firstadd_envo_score);
+    int c = abs(firstadd_eco_score - firstadd_envo_score);
     
-     builtFacilitiesList += "\n" + numberOfFacilities + current->getName();
+    int minimalDistance = std::max({a, b, c});
+    
+    if (minimalDistance == 0){
+        return *current;
+    }
+
+    for (const FacilityType& facility : facilitiesOptions) {
+        int secondAdd_lifeq_score  = LifeQualityScore + facility.getLifeQualityScore();
+        int SecondAdd_eco_score = EconomyScore + facility.getEconomyScore();
+        int SecondAdd_envo_score = EnvironmentScore + facility.getEnvironmentScore();
+
+        int x = abs( secondAdd_lifeq_score -  SecondAdd_eco_score);
+        int y = abs( secondAdd_lifeq_score -  SecondAdd_envo_score);
+        int z = abs( SecondAdd_eco_score -  SecondAdd_envo_score);
+        std::cout << "checking distance after :  " << facility.getName()<< std::endl;
+
+        int currentdistance = std::max({x, y, z});
+        std::cout << "distance will be "  << currentdistance<< std::endl;
 
 
-     return *current;
+        if (currentdistance == 0){
+            return facility;
+        }
 
-     
+        if(minimalDistance > currentdistance){
+            minimalDistance = currentdistance;
+            current = &facility;
+        } 
 
+    }
+            std::cout << "best choice is  " << current->getName()  <<" WIth distance of: " << minimalDistance <<std::endl;
+    LifeQualityScore += current->getLifeQualityScore();
+    EnvironmentScore += current->getEnvironmentScore();
+    EconomyScore += current->getEconomyScore();
+
+    return *current;
 }
 
 

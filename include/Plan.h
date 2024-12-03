@@ -24,6 +24,7 @@ class Plan {
         void step();
         void printStatus();
         const vector<Facility*> &getFacilities() const;
+        const vector<Facility*> &getUnderConstruction() const;
         void addFacility(Facility* facility);
         const string toString() const;
         const string getSettlementName() const;

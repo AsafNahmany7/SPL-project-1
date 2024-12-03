@@ -155,12 +155,18 @@ void PrintPlanStatus::act(Simulation &simulation) {
         std::cout << "EconomyScore: " << plan.getEconomyScore() << std::endl;
         std::cout << "EnvrionmentScore: " << plan.getEnvironmentScore() << std::endl;
 
-        // Print all facilities
+        // Print all underconstruction facilities
+        const std::vector<Facility*>& underConstruction = plan.getUnderConstruction();
+        for (const Facility* facility : underConstruction) {
+            std::cout << "FacilityName: " << facility->getName() << std::endl;
+            std::cout << "FacilityStatus: UNDER_CONSTRUCTION" << std::endl; 
+        }
+
+        // Print all operational facilities
         const std::vector<Facility*>& facilities = plan.getFacilities();
         for (const Facility* facility : facilities) {
             std::cout << "FacilityName: " << facility->getName() << std::endl;
-            std::cout << "FacilityStatus: " << 
-                (facility->getStatus() == FacilityStatus :: OPERATIONAL ? "OPERATIONAL" : "UNDER_CONSTRUCTIONS") << std::endl; 
+            std::cout << "FacilityStatus: OPERATIONAL" << std::endl; 
         }
         
         complete();
