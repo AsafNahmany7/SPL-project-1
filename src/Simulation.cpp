@@ -188,8 +188,6 @@ Simulation& Simulation::operator=(const Simulation& other) {
 }
 
 
-
-
 void Simulation::start() {
     isRunning = true; // Start the simulation
     cout << "Simulation started. Enter commands:\n";
@@ -229,28 +227,17 @@ void Simulation::start() {
                 cout << "Invalid input for plan command. Syntax: plan <settlement_name> <selection_policy>\n";
             }
         }
-        else if (actionType == "add_settlement") {
-            string settlementName, settlementTypeStr;
-            iss >> settlementName >> settlementTypeStr;
+        else if (actionType == "settlement") {
+            string settlementName;
+            int settlementType;
+            iss >> settlementName >> settlementType;
 
-            if (!iss.fail()) {
-                SettlementType settlementType;
-                if (settlementTypeStr == "village") {
-                    settlementType = static_cast<SettlementType>(0);
-                } else if (settlementTypeStr == "city") {
-                    settlementType = static_cast<SettlementType>(1);
-                } else if (settlementTypeStr == "metropolis") {
-                    settlementType = static_cast<SettlementType>(2);
-                } else {
-                    cout << "Invalid settlement type. Use 'village', 'city', or 'metropolis'.\n";
-                    continue;
-                }
-
-                AddSettlement* action = new AddSettlement(settlementName, settlementType);
+            if (!iss.fail() && (settlementType == 0 || settlementType == 1 || settlementType == 2)) {
+                AddSettlement* action = new AddSettlement(settlementName, static_cast<SettlementType>(settlementType));
                 action->act(*this);
                 addAction(action);
             } else {
-                cout << "Invalid input for add_settlement command. Syntax: add_settlement <settlement_name> <settlement_type>\n";
+                cout << "Invalid input for settlement command. Syntax: settlement <settlement_name> <settlement_type (0: village, 1: city, 2: metropolis)>\n";
             }
         }
         else if (actionType == "facility") {
@@ -318,6 +305,8 @@ void Simulation::start() {
 
     cout << "Simulation stopped.\n";
 }
+
+
 
 void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy){
     planCounter++;
