@@ -69,7 +69,9 @@ facilitiesOptions()
 Simulation::Simulation(const Simulation& other)
     : isRunning(other.isRunning),
       planCounter(other.planCounter),
+      actionsLog(),  // Initialize actionsLog here
       plans(other.plans),  // This will now work with Plan's copy constructor
+      settlements(),  // Initialize settlements here
       facilitiesOptions(other.facilitiesOptions)
 {
     // Deep copy actions
@@ -82,6 +84,8 @@ Simulation::Simulation(const Simulation& other)
         settlements.push_back(new Settlement(*settlement));
     }
 }
+
+
 
 
 // Update move constructor to be more efficient

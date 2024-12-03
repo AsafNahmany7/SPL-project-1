@@ -14,6 +14,8 @@ class Plan {
     public:
         Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions);
         Plan(const Plan& other);
+        // Add this to your Plan.h file in the public section
+        Plan& operator=(const Plan& other) = delete;
         ~Plan();
         int getlifeQualityScore() const;
         int getEconomyScore() const;

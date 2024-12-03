@@ -14,32 +14,32 @@ life_quality_score(0),
 economy_score(0),
 environment_score(0){}
 
-Plan::Plan(const Plan& other): plan_id(other.plan_id),
-      settlement(other.settlement),
-      construction_cap(other.construction_cap),
-      selectionPolicy(other.selectionPolicy->clone()),
-      status(other.status),
-      facilityOptions(other.facilityOptions),
-      life_quality_score(other.life_quality_score),
-      economy_score(other.economy_score),
-      environment_score(other.environment_score)
-      
-      
+Plan::Plan(const Plan& other): 
+    plan_id(other.plan_id),
+    settlement(other.settlement),
+    construction_cap(other.construction_cap),
+    selectionPolicy(other.selectionPolicy->clone()),
+    status(other.status),
+    facilities(),  // Initialize empty vector
+    underConstruction(),  // Initialize empty vector
+    facilityOptions(other.facilityOptions),
+    life_quality_score(other.life_quality_score),
+    economy_score(other.economy_score),
+    environment_score(other.environment_score)
 {
+    // Copy the facilities
     for (Facility* facility : other.facilities) {
         Facility* facility_copy = new Facility(*facility);
         this->facilities.push_back(facility_copy);
     }
 
+    // Copy the underConstruction facilities
     for (Facility* facility : other.underConstruction) {
          Facility* facility_copy = new Facility(*facility);
          this->underConstruction.push_back(facility_copy);   
     }
-
-
-
-
 }
+
 
 
 Plan::~Plan() {
