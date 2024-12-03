@@ -16,8 +16,8 @@ environment_score(0){}
 
 Plan::Plan(const Plan& other): plan_id(other.plan_id),
       settlement(other.settlement),
-      selectionPolicy(other.selectionPolicy->clone()),
       construction_cap(other.construction_cap),
+      selectionPolicy(other.selectionPolicy->clone()),
       status(other.status),
       facilityOptions(other.facilityOptions),
       life_quality_score(other.life_quality_score),

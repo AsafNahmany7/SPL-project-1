@@ -5,6 +5,8 @@ class Simulation;
 enum class SettlementType;
 enum class FacilityCategory;
 
+using namespace std;
+
 enum class ActionStatus{
     COMPLETED, ERROR
 };

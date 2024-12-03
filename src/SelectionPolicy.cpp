@@ -5,12 +5,12 @@
 using std::vector;
 
 
-NaiveSelection::NaiveSelection():lastSelectedIndex(-1),builtFacilitiesList("Built Facilities list:"),numberOfFacilities(0){}
+NaiveSelection::NaiveSelection():lastSelectedIndex(-1), numberOfFacilities(0), builtFacilitiesList("Built Facilities list:"){}
 
 const FacilityType& NaiveSelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
     numberOfFacilities++;
 
-    if((lastSelectedIndex + 1) < facilitiesOptions.size()){
+    if((lastSelectedIndex + 1) < static_cast<int>(facilitiesOptions.size())){
        const FacilityType& output_option1 = facilitiesOptions[lastSelectedIndex + 1];
        lastSelectedIndex++;
        builtFacilitiesList += "\n" + std::to_string(numberOfFacilities) + ". "  + output_option1.getName(); 
@@ -113,7 +113,7 @@ BalancedSelection* BalancedSelection::clone() const{
 }
 
 
-EconomySelection::EconomySelection():lastSelectedIndex(-1),builtFacilitiesList("Built Facilities list:"),numberOfFacilities(0){}
+EconomySelection::EconomySelection():lastSelectedIndex(-1),numberOfFacilities(0),builtFacilitiesList("Built Facilities list:"){}
 
 const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
 
@@ -174,7 +174,7 @@ const FacilityType& EconomySelection::selectFacility(const vector<FacilityType>&
 
     }
 
-SustainabilitySelection::SustainabilitySelection():lastSelectedIndex(-1),builtFacilitiesList("Built Facilities list:"),numberOfFacilities(0){}
+SustainabilitySelection::SustainabilitySelection():lastSelectedIndex(-1),numberOfFacilities(0),builtFacilitiesList("Built Facilities list:"){}
 
 const FacilityType& SustainabilitySelection::selectFacility(const vector<FacilityType>& facilitiesOptions){
 

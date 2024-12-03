@@ -64,90 +64,65 @@ facilitiesOptions()
     configFile.close();
 }
 
+// Changes to Simulation.cpp
+
 Simulation::Simulation(const Simulation& other)
     : isRunning(other.isRunning),
       planCounter(other.planCounter),
-      plans(other.plans) ,
+      plans(other.plans),  // This will now work with Plan's copy constructor
       facilitiesOptions(other.facilitiesOptions)
-      
-
 {
-    for (BaseAction* currentOtherAction : other.actionsLog) {
-        BaseAction* currentOtherActionCopy = currentOtherAction->clone();
-        this->actionsLog.push_back(currentOtherActionCopy);
+    // Deep copy actions
+    for (BaseAction* action : other.actionsLog) {
+        actionsLog.push_back(action->clone());
     }
 
-    for (Settlement* currentOtherSettlement : other.settlements) {
-        Settlement* currentOtherSettlementCopy = new Settlement(*currentOtherSettlement);
-        this->settlements.push_back(currentOtherSettlement);
+    // Deep copy settlements
+    for (Settlement* settlement : other.settlements) {
+        settlements.push_back(new Settlement(*settlement));
     }
 }
 
-Simulation::Simulation(Simulation&& other){
-    this->isRunning=other.isRunning;
-    this->planCounter=other.planCounter;
-    this->plans = other.plans;
-    this->facilitiesOptions = other.facilitiesOptions;
 
-    for (BaseAction* currentOtherAction : other.actionsLog) {
-        BaseAction* currentOtherActionCopy = currentOtherAction;
-        this->actionsLog.push_back(currentOtherActionCopy);
-        currentOtherAction=nullptr;
-    }
-
-    for (Settlement* currentOtherSettlement : other.settlements) {
-        Settlement* currentOtherSettlementCopy = currentOtherSettlement;
-        this->settlements.push_back(currentOtherSettlementCopy);
-        currentOtherSettlement = nullptr;
-    }
-
-
-
+// Update move constructor to be more efficient
+Simulation::Simulation(Simulation&& other)
+    : isRunning(other.isRunning),
+      planCounter(other.planCounter),
+      actionsLog(std::move(other.actionsLog)),
+      plans(std::move(other.plans)),
+      settlements(std::move(other.settlements)),
+      facilitiesOptions(std::move(other.facilitiesOptions))
+      
+{
+    other.actionsLog.clear();
+    other.settlements.clear();
 }
 
-Simulation& Simulation::operator=(Simulation&& other){
-    if(this==&other){
-        return *this;
+// Update move assignment operator
+Simulation& Simulation::operator=(Simulation&& other) {
+    if(this != &other) {
+        // Clean up existing resources
+        for(BaseAction* action : actionsLog) {
+            delete action;
+        }
+        for(Settlement* settlement : settlements) {
+            delete settlement;
+        }
+        
+        // Move all members
+        isRunning = other.isRunning;
+        planCounter = other.planCounter;
+        plans = std::move(other.plans);
+        facilitiesOptions = std::move(other.facilitiesOptions);
+        actionsLog = std::move(other.actionsLog);
+        settlements = std::move(other.settlements);
+        
+        // Clear other's resources
+        other.actionsLog.clear();
+        other.settlements.clear();
     }
-
-     for(BaseAction* currentAction : this->actionsLog){
-        delete currentAction;
-        this->actionsLog.clear();
-    }
-
-    for(Plan currentPlan : this->plans){
-        this->plans.clear();
-    }
-    for(Settlement* currentSettlement : this->settlements){
-        delete currentSettlement;
-        this->settlements.clear();
-    }
-    for(FacilityType currentFacility : this->facilitiesOptions){
-        this->facilitiesOptions.clear();
-    }
-
-
-    this->isRunning = other.isRunning;
-    this->planCounter = other.planCounter;
-
-     for (BaseAction* currentOtherAction : other.actionsLog) {
-        BaseAction* currentOtherActionCopy = currentOtherAction;
-        this->actionsLog.push_back(currentOtherActionCopy);
-        currentOtherAction=nullptr;
-    }
-
-    for (Settlement* currentOtherSettlement : other.settlements) {
-        Settlement* currentOtherSettlementCopy = currentOtherSettlement;
-        this->settlements.push_back(currentOtherSettlementCopy);
-        currentOtherSettlement = nullptr;
-    }
-
-
-
- 
+    return *this;
 }
-
-
 
 Simulation::~Simulation() {
     for (BaseAction* action : actionsLog) {
@@ -165,25 +140,21 @@ Simulation& Simulation::operator=(const Simulation& other) {
         return *this;
     }
 
-
-
+    // First delete/clear everything
     for(BaseAction* currentAction : this->actionsLog){
         delete currentAction;
-        this->actionsLog.clear();
     }
+    actionsLog.clear();
 
-    for(Plan currentPlan : this->plans){
-        this->plans.clear();
-    }
     for(Settlement* currentSettlement : this->settlements){
         delete currentSettlement;
-        this->settlements.clear();
     }
-    for(FacilityType currentFacility : this->facilitiesOptions){
-        this->facilitiesOptions.clear();
-    }
+    settlements.clear();
+    
+    plans.clear();
+    facilitiesOptions.clear();
 
-
+    // Then copy new data
     this->isRunning = other.isRunning;
     this->planCounter = other.planCounter;
 
@@ -192,16 +163,20 @@ Simulation& Simulation::operator=(const Simulation& other) {
         this->actionsLog.push_back(currentOtherActionCopy);
     }
 
-    for(Plan currentOtherPlan : other.plans){
+    for(const Plan& currentOtherPlan : other.plans){
         this->plans.emplace_back(currentOtherPlan);
     }
+
     for(Settlement* currentOtherSettlement : other.settlements){
         Settlement* currentOtherSettlementCopy = new Settlement(*currentOtherSettlement);
-        this->settlements.push_back(currentOtherSettlement);
+        this->settlements.push_back(currentOtherSettlementCopy);  // Push the copy, not the original
     }
-    for(FacilityType currentOtherFacility : other.facilitiesOptions){
+
+    for(const FacilityType& currentOtherFacility : other.facilitiesOptions){
         this->facilitiesOptions.emplace_back(currentOtherFacility);
     }
+
+    return *this;
 }
 
 
