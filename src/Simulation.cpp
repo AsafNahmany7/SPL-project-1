@@ -174,7 +174,7 @@ Simulation& Simulation::operator=(const Simulation& other) {
     }
 
     for(const Plan& currentOtherPlan : other.plans){
-        this->plans.push_back(currentOtherPlan);
+        this->plans.emplace_back(currentOtherPlan);
     }
 
     for(Settlement* currentOtherSettlement : other.settlements){
@@ -361,7 +361,9 @@ Plan& Simulation::getPlan(const int planID){
 }
 
 void Simulation::step() {
+    std::cout<<"step of simulation activated calling plan's step..."<<endl;
     for (Plan& plan : plans) {
+
         plan.step();
     }
 }

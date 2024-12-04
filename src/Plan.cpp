@@ -44,14 +44,27 @@ Plan::Plan(const Plan& other)
 
 
 Plan::~Plan() {
-    delete &settlement; // שחרור הזיכרון של Settlement מה-heap
+    if (&settlement!=nullptr){
+        delete &settlement; 
+
+
+    }
 
     for (Facility* facility : facilities) {
-        delete facility;
+        if (facility!=nullptr){
+            std::cout << "Deleting facility from facilities: " << facility << std::endl;
+             delete facility;
+
+        }
+        
+       
     }
 
     for (Facility* facility : underConstruction) {
-        delete facility;
+        if (facility!=nullptr){
+            std::cout << "Deleting facility from facilities: " << facility << std::endl;
+            delete facility;
+        }
     }
 
     delete selectionPolicy;
@@ -79,6 +92,17 @@ void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy){
 
 void Plan::step(){
 
+      // Debugging: Print initial state of the vectors
+    std::cout << "==== DEBUG: Plan ID: " << plan_id << " ====" << std::endl;
+    std::cout << "Facilities (before step):" << std::endl;
+    for (const Facility* facility : facilities) {
+        std::cout << facility->toString() << std::endl;
+    }
+    std::cout << "Under Construction (before step):" << std::endl;
+    for (const Facility* facility : underConstruction) {
+        std::cout << facility->toString() << std::endl;
+    }
+
     if (status == PlanStatus::AVALIABLE){
         while(static_cast<int>(underConstruction.size()) < construction_cap){
            const FacilityType& selectedFacility = selectionPolicy->selectFacility(facilityOptions);
@@ -90,25 +114,42 @@ void Plan::step(){
             this->status = PlanStatus::BUSY;
         }
 
-       for (Facility* facility : underConstruction) {
-          facility->step(); 
-          if (facility->getStatus() == FacilityStatus::OPERATIONAL){
-            this->addFacility(facility);
-            this->status = PlanStatus::AVALIABLE;
-          }
-       }
+     for (auto it = underConstruction.begin(); it != underConstruction.end(); ) {
+            Facility* facility = *it;
+            facility->step();
+
+            if (facility->getStatus() == FacilityStatus::OPERATIONAL) {
+       
+                this->addFacility(facility);
+
+                it = underConstruction.erase(it); // עדכון האיטרטור אחרי מחיקה
+
+               this->status = PlanStatus::AVALIABLE;
+            } 
+            else {
+                ++it; // מעבר לאיבר הבא אם לא נמחק
+                }
+        }
 
     }
 
     else{
-        for (Facility* facility : underConstruction) {
-          facility->step(); 
-          if (facility->getStatus() == FacilityStatus::OPERATIONAL){
-            this->addFacility(facility);
-            this->status = PlanStatus::AVALIABLE;
-          }
-          
-       }
+        for (auto it = underConstruction.begin(); it != underConstruction.end(); ) {
+            Facility* facility = *it;
+            facility->step();
+
+            if (facility->getStatus() == FacilityStatus::OPERATIONAL) {
+       
+                this->addFacility(facility);
+
+                it = underConstruction.erase(it); // עדכון האיטרטור אחרי מחיקה
+
+               this->status = PlanStatus::AVALIABLE;
+            } 
+            else {
+                ++it; // מעבר לאיבר הבא אם לא נמחק
+                }
+        }
 
     }
 
@@ -133,30 +174,14 @@ const vector<Facility*>& Plan::getUnderConstruction() const{
     return underConstruction;
 }
 
-void Plan::addFacility(Facility* facility){
-    auto iter = underConstruction.begin();
-    
-    for (; iter != underConstruction.end(); ++iter) {
-        if (*iter == facility) {
-            break;
-        }
-
-    }
-
-    if (iter != underConstruction.end()) {
-        underConstruction.erase(iter);
-    }
-
-
-
+void Plan::addFacility(Facility* facility) {
+    // הוספת הפוינטר ל-facilities
     facilities.push_back(facility);
+
+    // עדכון ניקוד
     this->environment_score += facility->getEnvironmentScore();
     this->economy_score += facility->getEconomyScore();
-    this->life_quality_score += facility->getLifeQualityScore(); 
-
-
-
-
+    this->life_quality_score += facility->getLifeQualityScore();
 }
 
 const string Plan::toString() const{

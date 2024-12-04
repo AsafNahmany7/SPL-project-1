@@ -72,8 +72,12 @@ int Facility::getTimeLeft() const {
 }
 
 FacilityStatus Facility::step() {
+    std::cout << "step for :" << this->getName()<<std::endl;
     if (timeLeft > 0) {
+        std::cout << "time before step was :" << this->getTimeLeft()<< std::endl;
         timeLeft--;
+        std::cout << "time after step was :" << this->getTimeLeft()<< std::endl;
+
         if (timeLeft == 0) {
             status = FacilityStatus::OPERATIONAL;
         }
