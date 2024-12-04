@@ -189,18 +189,20 @@ ChangePlanPolicy::ChangePlanPolicy(const int planId, const string &newPolicy)
     : planId(planId), newPolicy(newPolicy) {}
 
 void ChangePlanPolicy::act(Simulation &simulation) {
-    if (!simulation.isPlanExists(planId)) {
+    
+    Plan& plan = simulation.getPlan(planId);
+
+    if (!simulation.isPlanExists(planId) || plan.getSelectionPolicyString() == newPolicy) {
         error("Cannot change selection policy");
         return;
     }
 
-    Plan& plan = simulation.getPlan(planId);
     SelectionPolicy* policy = nullptr;
     
     if(newPolicy == "nve") {
         policy = new NaiveSelection();
     } else if(newPolicy == "bal") {
-        policy = new BalancedSelection(0,0,0);
+        policy = new BalancedSelection(plan.getlifeQualityScore(),plan.getEconomyScore(),plan.getEnvironmentScore());
     } else if(newPolicy == "eco") {
         policy = new EconomySelection();
     } else if(newPolicy == "env") {
@@ -252,13 +254,14 @@ void Close::act(Simulation &simulation) {
     const std::vector<Plan>& plans = simulation.getPlans();
     
     // Print details for each plan
-    for (const Plan& plan : plans) {
-        std::cout << "PlanID: " << plan.getPlanId() << std::endl;
+    for (int counter=0;counter<(static_cast<int>(plans.size()));counter++) {
+        Plan& plan = simulation.getPlan(counter);
+        std::cout << "PlanID: " << counter << std::endl;
         std::cout << "SettlementName: " << plan.getSettlementName() << std::endl;
         std::cout << "LifeQuality_Score: " << plan.getlifeQualityScore() << std::endl;
         std::cout << "Economy_Score: " << plan.getEconomyScore() << std::endl;
         std::cout << "Environment_Score: " << plan.getEnvironmentScore() << std::endl;
-        std::cout << std::endl;  // Empty line between plans for better readability
+        std::cout << std::endl;  
     }
     
     // Close the simulation

@@ -19,9 +19,8 @@ class Simulation {
         Simulation& operator=(const Simulation& other);
         Simulation(Simulation&& other);
         Simulation& operator=(Simulation&& other);
-
-
         ~Simulation();
+        
         void start();
         void addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy);
         void addAction(BaseAction *action);
