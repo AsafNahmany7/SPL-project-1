@@ -35,6 +35,7 @@ class Plan {
 
 
     private:
+
         int plan_id;
         const Settlement &settlement;
         int construction_cap;

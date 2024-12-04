@@ -4,47 +4,47 @@
 
 using namespace std;
 
-Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions): plan_id(planId),
-settlement(settlement),
-construction_cap((static_cast<int>(settlement.getType())) + 1),
-selectionPolicy(selectionPolicy),
-status(PlanStatus::AVALIABLE),
-facilities(),
-underConstruction(),
-facilityOptions(facilityOptions),
-life_quality_score(0),
-economy_score(0),
-environment_score(0){}
+Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions)
+    : plan_id(planId),
+      settlement(*new Settlement(settlement)), // הקצאת עותק חדש על ה-heap
+      construction_cap(static_cast<int>(settlement.getType()) + 1),
+      selectionPolicy(selectionPolicy),
+      status(PlanStatus::AVALIABLE),
+      facilities(),
+      underConstruction(),
+      facilityOptions(facilityOptions),
+      life_quality_score(0),
+      economy_score(0),
+      environment_score(0) {}
 
-Plan::Plan(const Plan& other): 
-    plan_id(other.plan_id),
-    settlement(other.settlement),
-    construction_cap(other.construction_cap),
-    selectionPolicy(other.selectionPolicy->clone()),
-    status(other.status),
-    facilities(),  // Initialize empty vector
-    underConstruction(),  // Initialize empty vector
-    facilityOptions(other.facilityOptions),
-    life_quality_score(other.life_quality_score),
-    economy_score(other.economy_score),
-    environment_score(other.environment_score)
-{
-    // Copy the facilities
+Plan::Plan(const Plan& other)
+    : plan_id(other.plan_id),
+      settlement(*new Settlement(other.settlement)), // יצירת עותק חדש של Settlement על ה-heap
+      construction_cap(other.construction_cap),
+      selectionPolicy(other.selectionPolicy->clone()),
+      status(other.status),
+      facilities(),
+      underConstruction(),
+      facilityOptions(other.facilityOptions),
+      life_quality_score(other.life_quality_score),
+      economy_score(other.economy_score),
+      environment_score(other.environment_score) {
+    // העתקת המתקנים
     for (Facility* facility : other.facilities) {
-        Facility* facility_copy = new Facility(*facility);
-        this->facilities.push_back(facility_copy);
+        facilities.push_back(new Facility(*facility));
     }
 
-    // Copy the underConstruction facilities
+    // העתקת המתקנים שנמצאים בבנייה
     for (Facility* facility : other.underConstruction) {
-         Facility* facility_copy = new Facility(*facility);
-         this->underConstruction.push_back(facility_copy);   
+        underConstruction.push_back(new Facility(*facility));
     }
 }
 
 
 
+
 Plan::~Plan() {
+    delete &settlement; // שחרור הזיכרון של Settlement מה-heap
 
     for (Facility* facility : facilities) {
         delete facility;

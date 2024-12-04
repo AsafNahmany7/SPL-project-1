@@ -154,12 +154,14 @@ Simulation& Simulation::operator=(const Simulation& other) {
     }
     actionsLog.clear();
 
+     plans.clear();
+
     for(Settlement* currentSettlement : this->settlements){
         delete currentSettlement;
     }
     settlements.clear();
     
-    plans.clear();
+   
     facilitiesOptions.clear();
 
     // Then copy new data
@@ -172,7 +174,7 @@ Simulation& Simulation::operator=(const Simulation& other) {
     }
 
     for(const Plan& currentOtherPlan : other.plans){
-        this->plans.emplace_back(currentOtherPlan);
+        this->plans.push_back(currentOtherPlan);
     }
 
     for(Settlement* currentOtherSettlement : other.settlements){
