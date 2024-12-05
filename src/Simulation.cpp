@@ -301,8 +301,7 @@ void Simulation::start() {
 
 void Simulation::addPlan(const Settlement &settlement, SelectionPolicy *selectionPolicy){
     planCounter++;
-    Plan new_plan = Plan(planCounter,settlement,selectionPolicy,facilitiesOptions); 
-    plans.push_back(new_plan);
+    plans.emplace_back(planCounter, settlement, selectionPolicy, facilitiesOptions);
 }
 
 void Simulation::addAction(BaseAction *action){
