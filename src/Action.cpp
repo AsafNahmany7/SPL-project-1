@@ -248,7 +248,6 @@ void Close::act(Simulation &simulation) {
         std::cout << std::endl;  
     }
     
-    // Close the simulation
     simulation.close();
     complete();
 }

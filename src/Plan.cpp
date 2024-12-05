@@ -29,7 +29,7 @@ Plan::Plan(const Plan& other)
       life_quality_score(other.life_quality_score),
       economy_score(other.economy_score),
       environment_score(other.environment_score) {
-    // העתקת המתקנים
+   
     for (Facility* facility : other.facilities) {
         facilities.push_back(new Facility(*facility));
     }

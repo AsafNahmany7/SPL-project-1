@@ -72,9 +72,9 @@ facilitiesOptions()
 Simulation::Simulation(const Simulation& other)
     : isRunning(other.isRunning),
       planCounter(other.planCounter),
-      actionsLog(),  // Initialize actionsLog here
-      plans(other.plans),  // This will now work with Plan's copy constructor
-      settlements(),  // Initialize settlements here
+      actionsLog(), 
+      plans(other.plans),  
+      settlements(),  
       facilitiesOptions(other.facilitiesOptions)
 {
     for (BaseAction* action : other.actionsLog) {
@@ -169,7 +169,7 @@ Simulation& Simulation::operator=(const Simulation& other) {
 
     for(Settlement* currentOtherSettlement : other.settlements){
         Settlement* currentOtherSettlementCopy = new Settlement(*currentOtherSettlement);
-        this->settlements.push_back(currentOtherSettlementCopy);  // Push the copy, not the original
+        this->settlements.push_back(currentOtherSettlementCopy);  
     }
 
     for(const FacilityType& currentOtherFacility : other.facilitiesOptions){
