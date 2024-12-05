@@ -6,7 +6,7 @@ using namespace std;
 
 Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *selectionPolicy, const vector<FacilityType> &facilityOptions)
     : plan_id(planId),
-      settlement(*new Settlement(settlement)), // הקצאת עותק חדש על ה-heap
+      settlement(*new Settlement(settlement)), 
       construction_cap(static_cast<int>(settlement.getType()) + 1),
       selectionPolicy(selectionPolicy),
       status(PlanStatus::AVALIABLE),
@@ -19,7 +19,7 @@ Plan::Plan(const int planId, const Settlement &settlement, SelectionPolicy *sele
 
 Plan::Plan(const Plan& other)
     : plan_id(other.plan_id),
-      settlement(*new Settlement(other.settlement)), // יצירת עותק חדש של Settlement על ה-heap
+      settlement(*new Settlement(other.settlement)), 
       construction_cap(other.construction_cap),
       selectionPolicy(other.selectionPolicy->clone()),
       status(other.status),
@@ -34,7 +34,7 @@ Plan::Plan(const Plan& other)
         facilities.push_back(new Facility(*facility));
     }
 
-    // העתקת המתקנים שנמצאים בבנייה
+    
     for (Facility* facility : other.underConstruction) {
         underConstruction.push_back(new Facility(*facility));
     }
@@ -108,12 +108,12 @@ void Plan::step(){
        
                 this->addFacility(facility);
 
-                it = underConstruction.erase(it); // עדכון האיטרטור אחרי מחיקה
+                it = underConstruction.erase(it); 
 
                this->status = PlanStatus::AVALIABLE;
             } 
             else {
-                ++it; // מעבר לאיבר הבא אם לא נמחק
+                ++it; 
                 }
         }
 
@@ -128,12 +128,12 @@ void Plan::step(){
        
                 this->addFacility(facility);
 
-                it = underConstruction.erase(it); // עדכון האיטרטור אחרי מחיקה
+                it = underConstruction.erase(it);
 
                this->status = PlanStatus::AVALIABLE;
             } 
             else {
-                ++it; // מעבר לאיבר הבא אם לא נמחק
+                ++it; 
                 }
         }
 
@@ -161,10 +161,9 @@ const vector<Facility*>& Plan::getUnderConstruction() const{
 }
 
 void Plan::addFacility(Facility* facility) {
-    // הוספת הפוינטר ל-facilities
+   
     facilities.push_back(facility);
 
-    // עדכון ניקוד
     this->environment_score += facility->getEnvironmentScore();
     this->economy_score += facility->getEconomyScore();
     this->life_quality_score += facility->getLifeQualityScore();

@@ -68,7 +68,6 @@ facilitiesOptions()
     configFile.close();
 }
 
-// Changes to Simulation.cpp
 
 Simulation::Simulation(const Simulation& other)
     : isRunning(other.isRunning),
@@ -78,12 +77,10 @@ Simulation::Simulation(const Simulation& other)
       settlements(),  // Initialize settlements here
       facilitiesOptions(other.facilitiesOptions)
 {
-    // Deep copy actions
     for (BaseAction* action : other.actionsLog) {
         actionsLog.push_back(action->clone());
     }
 
-    // Deep copy settlements
     for (Settlement* settlement : other.settlements) {
         settlements.push_back(new Settlement(*settlement));
     }
@@ -92,7 +89,6 @@ Simulation::Simulation(const Simulation& other)
 
 
 
-// Update move constructor to be more efficient
 Simulation::Simulation(Simulation&& other)
     : isRunning(other.isRunning),
       planCounter(other.planCounter),
@@ -106,10 +102,8 @@ Simulation::Simulation(Simulation&& other)
     other.settlements.clear();
 }
 
-// Update move assignment operator
 Simulation& Simulation::operator=(Simulation&& other) {
     if(this != &other) {
-        // Clean up existing resources
         for(BaseAction* action : actionsLog) {
             delete action;
         }
@@ -117,7 +111,6 @@ Simulation& Simulation::operator=(Simulation&& other) {
             delete settlement;
         }
         
-        // Move all members
         isRunning = other.isRunning;
         planCounter = other.planCounter;
         plans = std::move(other.plans);
@@ -125,7 +118,6 @@ Simulation& Simulation::operator=(Simulation&& other) {
         actionsLog = std::move(other.actionsLog);
         settlements = std::move(other.settlements);
         
-        // Clear other's resources
         other.actionsLog.clear();
         other.settlements.clear();
     }
@@ -148,7 +140,6 @@ Simulation& Simulation::operator=(const Simulation& other) {
         return *this;
     }
 
-    // First delete/clear everything
     for(BaseAction* currentAction : this->actionsLog){
         delete currentAction;
     }
@@ -164,7 +155,6 @@ Simulation& Simulation::operator=(const Simulation& other) {
    
     facilitiesOptions.clear();
 
-    // Then copy new data
     this->isRunning = other.isRunning;
     this->planCounter = other.planCounter;
 
@@ -191,13 +181,13 @@ Simulation& Simulation::operator=(const Simulation& other) {
 
 
 void Simulation::start() {
-    isRunning = true; // Start the simulation
+    isRunning = true; 
     cout << "Simulation started. Enter commands:\n";
 
     while (isRunning) {
-        cout << "> "; // Prompt for input
+        cout << "> "; 
         string command;
-        getline(cin, command); // Get a full line from the user
+        getline(cin, command); 
 
         std::istringstream iss(command);
         string actionType;
@@ -286,7 +276,7 @@ void Simulation::start() {
         }
         else if (actionType == "close") {
             Close* action = new Close();
-            action->act(*this); // Will set isRunning = false
+            action->act(*this); 
             addAction(action);
         }
         else if (actionType == "backup") {

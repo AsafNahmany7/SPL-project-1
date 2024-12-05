@@ -5,7 +5,6 @@
 using std::string;
 using std::to_string;
 
-// FacilityType Implementation
 FacilityType::FacilityType(const string &name, FacilityCategory category, int price, int lifeQuality_score, int economy_score, int environment_score)
     : name(name), category(category), price(price), lifeQuality_score(lifeQuality_score), economy_score(economy_score), environment_score(environment_score) {}
 
@@ -42,7 +41,6 @@ FacilityCategory FacilityType::getCategory() const {
     return category;
 }
 
-// Facility Implementation
 Facility::Facility(const string &name, const string &settlementName, FacilityCategory category, int price, int lifeQuality_score, int economy_score, int environment_score)
     : FacilityType(name, category, price, lifeQuality_score, economy_score, environment_score),
      settlementName(settlementName), 

@@ -5,7 +5,6 @@
 using std::string;
 using namespace std;
 
-// BaseAction Implementation
 BaseAction::BaseAction() : errorMsg(""), status(ActionStatus::ERROR) {}
 
 ActionStatus BaseAction::getStatus() const {
@@ -26,7 +25,6 @@ const string& BaseAction::getErrorMsg() const {
     return errorMsg;
 }
 
-// SimulateStep Implementation
 SimulateStep::SimulateStep(const int numOfSteps) : numOfSteps(numOfSteps) {}
 
 void SimulateStep::act(Simulation &simulation) {
@@ -44,7 +42,6 @@ SimulateStep* SimulateStep::clone() const {
     return new SimulateStep(*this);
 }
 
-// AddPlan Implementation
 AddPlan::AddPlan(const string &settlementName, const string &selectionPolicy)
     : settlementName(settlementName), selectionPolicy(selectionPolicy) {}
 
@@ -82,7 +79,6 @@ AddPlan* AddPlan::clone() const {
     return new AddPlan(*this);
 }
 
-// AddSettlement Implementation
 AddSettlement::AddSettlement(const string &settlementName, SettlementType settlementType)
     : settlementName(settlementName), settlementType(settlementType) {}
 
@@ -110,7 +106,6 @@ AddSettlement* AddSettlement::clone() const {
     return new AddSettlement(*this);
 }
 
-// AddFacility Implementation
 AddFacility::AddFacility(const string &facilityName, const FacilityCategory facilityCategory, const int price,
                          const int lifeQualityScore, const int economyScore, const int environmentScore)
             : facilityName(facilityName), facilityCategory(facilityCategory), price(price),
@@ -137,32 +132,27 @@ AddFacility* AddFacility::clone() const {
     return new AddFacility(*this);
 }
 
-// PrintPlanStatus Implementation
 PrintPlanStatus::PrintPlanStatus(int planId) : planId(planId) {}
 
 void PrintPlanStatus::act(Simulation &simulation) {
     if (simulation.isPlanExists(planId)) {
         Plan& plan = simulation.getPlan(planId);
         
-        // Print plan basic information
         std::cout << "PlanID: " << planId << std::endl;
         std::cout << "SettlementName: " << plan.getSettlementName() << std::endl;
         std::cout << "PlanStatus: " << (plan.isAvailable() ? "AVAILABLE" : "BUSY") << std::endl;
         std::cout << "SelectionPolicy: " << plan.getSelectionPolicyString() << std::endl;
         
-        // Print scores
         std::cout << "LifeQualityScore: " << plan.getlifeQualityScore() << std::endl;
         std::cout << "EconomyScore: " << plan.getEconomyScore() << std::endl;
         std::cout << "EnvrionmentScore: " << plan.getEnvironmentScore() << std::endl;
 
-        // Print all underconstruction facilities
         const std::vector<Facility*>& underConstruction = plan.getUnderConstruction();
         for (const Facility* facility : underConstruction) {
             std::cout << "FacilityName: " << facility->getName() << std::endl;
             std::cout << "FacilityStatus: UNDER_CONSTRUCTION" << std::endl; 
         }
 
-        // Print all operational facilities
         const std::vector<Facility*>& facilities = plan.getFacilities();
         for (const Facility* facility : facilities) {
             std::cout << "FacilityName: " << facility->getName() << std::endl;
@@ -184,7 +174,6 @@ PrintPlanStatus* PrintPlanStatus::clone() const {
     return new PrintPlanStatus(*this);
 }
 
-// ChangePlanPolicy Implementation
 ChangePlanPolicy::ChangePlanPolicy(const int planId, const string &newPolicy)
     : planId(planId), newPolicy(newPolicy) {}
 
@@ -225,11 +214,9 @@ ChangePlanPolicy* ChangePlanPolicy::clone() const {
     return new ChangePlanPolicy(*this);
 }
 
-// PrintActionsLog Implementation
 PrintActionsLog::PrintActionsLog() {}
 
 void PrintActionsLog::act(Simulation &simulation) {
-    // Using standard output as specified in the assignment
     for(const BaseAction* action : simulation.getActionsLog()) {
         std::cout << action->toString() << std::endl;
     }
@@ -246,14 +233,11 @@ PrintActionsLog* PrintActionsLog::clone() const {
     return new PrintActionsLog(*this);
 }
 
-// Close Implementation
 Close::Close() {}
 
 void Close::act(Simulation &simulation) {
-    // Get all plans from simulation
     const std::vector<Plan>& plans = simulation.getPlans();
     
-    // Print details for each plan
     for (int counter=0;counter<(static_cast<int>(plans.size()));counter++) {
         Plan& plan = simulation.getPlan(counter);
         std::cout << "PlanID: " << counter << std::endl;
@@ -278,7 +262,6 @@ Close* Close::clone() const {
     return new Close(*this);
 }
 
-// BackupSimulation Implementation
 BackupSimulation::BackupSimulation() {}
 
 void BackupSimulation::act(Simulation &simulation) {
@@ -299,7 +282,6 @@ BackupSimulation* BackupSimulation::clone() const {
     return new BackupSimulation(*this);
 }
 
-// RestoreSimulation Implementation
 RestoreSimulation::RestoreSimulation() {}
 
 void RestoreSimulation::act(Simulation &simulation) {
