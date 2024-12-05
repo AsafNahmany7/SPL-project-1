@@ -52,9 +52,7 @@ Plan::~Plan() {
 
     for (Facility* facility : facilities) {
         if (facility!=nullptr){
-            std::cout << "Deleting facility from facilities: " << facility << std::endl;
              delete facility;
-
         }
         
        
@@ -62,7 +60,6 @@ Plan::~Plan() {
 
     for (Facility* facility : underConstruction) {
         if (facility!=nullptr){
-            std::cout << "Deleting facility from facilities: " << facility << std::endl;
             delete facility;
         }
     }
@@ -91,17 +88,6 @@ void Plan::setSelectionPolicy(SelectionPolicy *selectionPolicy){
 
 
 void Plan::step(){
-
-      // Debugging: Print initial state of the vectors
-    std::cout << "==== DEBUG: Plan ID: " << plan_id << " ====" << std::endl;
-    std::cout << "Facilities (before step):" << std::endl;
-    for (const Facility* facility : facilities) {
-        std::cout << facility->toString() << std::endl;
-    }
-    std::cout << "Under Construction (before step):" << std::endl;
-    for (const Facility* facility : underConstruction) {
-        std::cout << facility->toString() << std::endl;
-    }
 
     if (status == PlanStatus::AVALIABLE){
         while(static_cast<int>(underConstruction.size()) < construction_cap){

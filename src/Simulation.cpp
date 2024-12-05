@@ -22,7 +22,7 @@ facilitiesOptions()
     }
     
     if (configFile.peek() == std::ifstream::traits_type::eof()) {
-        throw std::runtime_error("Configuration file is empty: " + configFilePath);
+        throw std::runtime_error("Configuration file is empty: " + configFilePath + "  ,Please add valid configFile and start again");
     }
 
     string line;
@@ -208,11 +208,10 @@ void Simulation::start() {
             iss >> numOfSteps;
 
             if (!iss.fail()) {
-                for (int i = 0; i < numOfSteps; ++i) {
-                    SimulateStep* action = new SimulateStep(1); // Simulate one step at a time
-                    action->act(*this);
-                    addAction(action);
-                }
+                SimulateStep* action = new SimulateStep(numOfSteps); 
+                action->act(*this);
+                addAction(action);
+
             } else {
                 cout << "Invalid input for step command. Syntax: step <number of steps>\n";
             }
@@ -361,9 +360,7 @@ Plan& Simulation::getPlan(const int planID){
 }
 
 void Simulation::step() {
-    std::cout<<"step of simulation activated calling plan's step..."<<endl;
     for (Plan& plan : plans) {
-
         plan.step();
     }
 }
